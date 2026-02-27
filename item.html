@@ -1,0 +1,134 @@
+<script>
+    const cast = {
+        "ml": ["Angelina Keeley", "Dee Valladares", "Rizo Velovic", "Charlie Davis"],
+        "an": ["Emily Flippen", "Cirie Fields", "Mike White", "Aubry Bracco"],
+        "br": ["Tiffany Ervin", "Coach Wade", "Kamilla Karthigesu", "Ozzy Lusth"],
+        "sh": ["Q Burdette", "Joe Hunter", "Colby Donaldson", "Christian Hubicki"],
+        "su": ["Savannah Louie", "Jonathan Young", "Kyle Fraser", "Genevieve Mushaluk"],
+        "al": ["Stephenie LaGrossa", "Rick Devens", "Jenna Lewis", "Chrissy Hofbeck"]
+    };
+
+    function build() {
+        // If cards already exist (loaded from a save), just make sure they can still be dragged
+        if (document.querySelector('.player-row')) {
+            document.querySelectorAll('.player-row').forEach(r => {
+                r.setAttribute('ondragstart', 'ds(event)');
+                // If it's not immune, ensure it's draggable
+                if (!r.classList.contains('immune')) r.draggable = true;
+            });
+            checkStatus();
+            return;
+        }
+
+        for (const [oId, ps] of Object.entries(cast)) {
+            ps.forEach((n, idx) => {
+                const r = document.createElement('div');
+                r.className = `player-row owner-${oId} row-none`; 
+                r.id = `r-${oId}-${idx}`; 
+                r.draggable = true;
+                r.setAttribute('ondragstart', 'ds(event)'); // FIXED: Make drag connection permanent
+                r.onclick = (e) => { if(e.target.classList.contains('medal-slot')) e.target.innerText = ""; };
+                r.innerHTML = `<div class="medal-slot" ondragover="av(event)" ondrop="mDp(event)"></div><div class="card-front">
+                    <div class="img-box"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(n)}" class="player-img" onclick="document.getElementById('f-${oId}-${idx}').click()"><input type="file" id="f-${oId}-${idx}" style="display:none" onchange="pIm(this)"></div>
+                    <div class="player-info"><span class="player-name">${n}</span>
+                        <select class="tribe-select" onchange="uT(this)"><option value="none">Tribe: None</option><option value="vatu">Vatu</option><option value="cila">Cila</option><option value="kalo">Kalo</option></select>
+                    </div>
+                    <div class="controls"><span class="lock-indicator">🔒</span><span class="icon-toggle" onclick="tS(this,'im')">🟫</span><span class="icon-toggle" onclick="tS(this,'im')">📿</span><span class="icon-toggle" onclick="tS(this)">🗿</span><span class="icon-toggle" onclick="tS(this)">📜</span><span class="icon-toggle active" onclick="tT(this)">🔥</span><span class="icon-toggle active" onclick="fC(this)">🎴</span></div>
+                </div>
+                <div class="card-back"><span class="icon-toggle active" style="align-self: flex-end;" onclick="fC(this)">🎴</span>
+                    <select class="owner-select" onchange="uO(this)"><option value="ml" ${oId==='ml'?'selected':''}>Owner: Maribeth</option><option value="an" ${oId==='an'?'selected':''}>Owner: Ani</option><option value="br" ${oId==='br'?'selected':''}>Owner: Brandon</option><option value="sh" ${oId==='sh'?'selected':''}>Owner: Sheldon</option><option value="su" ${oId==='su'?'selected':''}>Owner: Susy</option><option value="al" ${oId==='al'?'selected':''}>Owner: Ali</option></select>
+                    <textarea placeholder="Notes..."></textarea></div>`;
+                document.getElementById(oId).appendChild(r);
+            });
+        }
+        checkStatus();
+    }
+
+    function checkStatus() {
+        document.querySelectorAll('.team-card').forEach(c => {
+            const list = c.querySelector('.player-list');
+            c.classList.toggle('empty', list && list.children.length === 0);
+            const medalBox = document.getElementById(`medals-${c.id.split('-')[1]}`);
+            if (medalBox) medalBox.innerHTML = ""; 
+        });
+
+        const p1 = document.getElementById('p-1').querySelector('.player-row');
+        const p2 = document.getElementById('p-2').querySelector('.player-row');
+        const p3 = document.getElementById('p-3').querySelector('.player-row');
+        if(p1) addMedal(p1, "🥇"); if(p2) addMedal(p2, "🥈"); if(p3) addMedal(p3, "🥉");
+
+        const activeCount = Array.from(document.querySelectorAll('.draft-board .player-row')).length + Array.from(document.getElementById('podium-section').querySelectorAll('.player-row')).length;
+        document.getElementById('podium-section').style.display = (activeCount <= 5) ? 'flex' : 'none';
+    }
+
+    function addMedal(card, emoji) {
+        const ownerClass = Array.from(card.classList).find(c => c.startsWith('owner-'));
+        if(ownerClass) {
+            const ownerId = ownerClass.split('-')[1];
+            const medalBox = document.getElementById(`medals-${ownerId}`);
+            if (medalBox) medalBox.innerHTML += emoji;
+        }
+    }
+
+    // FIXED: ds now works even on saved files
+    function ds(e) { 
+        const row = e.target.closest('.player-row');
+        if (row.classList.contains('immune')) { 
+            e.preventDefault(); 
+            return false; 
+        } 
+        e.dataTransfer.setData("text", row.id); 
+    }
+
+    function av(e){e.preventDefault()}
+    function dp(e){
+        e.preventDefault(); 
+        const d = e.dataTransfer.getData("text"); 
+        const target = e.target.closest('.player-list') || e.target.closest('.podium-box');
+        if(target && d) {
+            const card = document.getElementById(d);
+            if(target.classList.contains('podium-box')) { 
+                const area = target.querySelector('.drop-area') || target; 
+                area.innerHTML = ""; 
+                area.appendChild(card); 
+            } else {
+                target.appendChild(card);
+            }
+            checkStatus();
+        }
+    }
+
+    function cIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
+    function fIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
+    function hIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>document.getElementById('hlog').src=e.target.result;r.readAsDataURL(n.files[0])}}
+    function pIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
+    function toggleReadme() { const b = document.getElementById('readmeBox'); b.style.display = (b.style.display === 'block') ? 'none' : 'block'; }
+    function fC(e){e.closest('.player-row').classList.toggle('flipping')}
+    function tSt(e){e.classList.toggle('active')}
+    function uT(s) { const r = s.closest('.player-row'); r.classList.remove('row-vatu','row-cila','row-kalo','row-none'); r.classList.add('row-'+s.value); }
+    function uO(s) { const r = s.closest('.player-row'); r.classList.remove('owner-ml','owner-an','owner-br','owner-sh','owner-su','owner-al'); r.classList.add('owner-'+s.value); checkStatus(); }
+    
+    function tS(e,type){ 
+        e.classList.toggle('active'); 
+        if(type === 'im' || !type) { // Toggle immunity or general icons
+            const r = e.closest('.player-row'); 
+            const acts = Array.from(r.querySelectorAll('.icon-toggle.active')); 
+            const imm = acts.some(i => i.innerText === '🟫' || i.innerText === '📿'); 
+            r.classList.toggle('immune', imm); 
+            r.draggable = !imm; 
+        } 
+    }
+    
+    function tT(e){const r=e.closest('.player-row');r.classList.toggle('snuffed');e.innerText=r.classList.contains('snuffed')?'💨':'🔥';e.classList.toggle('active')}
+    
+    function sv(){
+        document.querySelectorAll('select').forEach(s => { Array.from(s.options).forEach(o => o.value === s.value ? o.setAttribute('selected', 'selected') : o.removeAttribute('selected')); });
+        document.querySelectorAll('.steal-icon').forEach(i=>i.classList.contains('active')?i.setAttribute('class','steal-icon active'):i.setAttribute('class','steal-icon'));
+        document.querySelectorAll('img').forEach(i=>{if(i.src && i.src.startsWith('data:image'))i.setAttribute('src',i.src)});
+        const a=document.createElement("a"); 
+        const b = new Blob([document.documentElement.outerHTML],{type:"text/html"});
+        a.href=URL.createObjectURL(b); 
+        a.download="Survivor.html"; 
+        a.click();
+    }
+</script>
