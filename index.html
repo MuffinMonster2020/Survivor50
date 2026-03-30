@@ -1,144 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Survivor Board - Updated</title>
-    <style>
-        /* Base styles derived from your file */
-        :root {
-            --gold: #ffc107;
-            --vatu: #e64a19;
-            --cila: #1976d2;
-            --kalo: #388e3c;
-            --mb-color: #1e88e5;
-            --an-color: #e53935;
-            --br-color: #43a047;
-            --sh-color: #f06292;
-            --su-color: #fdd835;
-            --al-color: #8e24aa;
-        }
+// --- REPLACE THESE FUNCTIONS IN YOUR ORIGINAL CODE ---
 
-        body { background: #121212; color: white; font-family: 'Montserrat', sans-serif; }
-        
-        .player-row { 
-            margin-bottom: 15px; 
-            height: 110px; 
-            position: relative; 
-            cursor: grab; 
-            transition: opacity 0.3s;
-        }
+function ds(e) {
+    // I removed the 'if (e.classList.contains("immune")) return;' line 
+    // This allows you to drag players even if they are currently Immune!
+    e.classList.add('dragging');
+    de = e;
+}
 
-        /* Immunity styling */
-        .player-row.immune .card-front { 
-            box-shadow: 0 0 25px var(--gold); 
-            border: 4px solid var(--gold) !important; 
-        }
+function tI(e) {
+    const r = e.closest('.player-row');
+    r.classList.toggle('immune');
+    // I removed the line that sets draggable to false.
+    // Now, even if they have the gold border, they stay movable.
+    r.setAttribute('draggable', 'true'); 
+}
 
-        /* Voted out styling */
-        .player-row.snuffed { 
-            opacity: 0.4; 
-            filter: grayscale(1); 
-        }
-
-        .card-front { 
-            background: #1a1a1a; 
-            border: 4px solid #444; 
-            border-radius: 10px; 
-            display: grid; 
-            grid-template-columns: 65px 1fr auto; 
-            align-items: center; 
-            padding: 0 15px; 
-            height: 100%;
-        }
-
-        .controls { display: flex; gap: 8px; }
-        .icon-toggle { cursor: pointer; font-size: 1.2rem; }
-        .lock-indicator { display: none; color: var(--gold); margin-right: 5px; }
-        .player-row.immune .lock-indicator { display: inline-block; }
-        
-        .graveyard-zone { 
-            margin-top: 50px; 
-            padding: 30px; 
-            border: 2px dashed #555; 
-            background: rgba(0,0,0,0.5); 
-            text-align: center; 
-            min-height: 100px;
-        }
-    </style>
-</head>
-<body>
-
-    <h2>Active Players</h2>
-    <div id="active-list" ondragover="allowDrop(event)" ondrop="drop(event)">
-        <div class="player-row owner-ml" id="player-angelina" draggable="true" ondragstart="dragStart(event)">
-            <div class="card-front">
-                <div class="img-box">👤</div>
-                <div class="player-info">
-                    <strong>Angelina</strong><br>
-                    <span class="lock-indicator">🔒 IMMUNE</span>
-                </div>
-                <div class="controls">
-                    <span class="icon-toggle" onclick="toggleImmunity(this)" title="Toggle Immunity">🏅</span>
-                    <span class="icon-toggle" onclick="toggleSnuffed(this)" title="Vote Out">🔥</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="player-row owner-br" id="player-charlie" draggable="true" ondragstart="dragStart(event)">
-            <div class="card-front">
-                <div class="img-box">👤</div>
-                <div class="player-info">
-                    <strong>Charlie</strong><br>
-                    <span class="lock-indicator">🔒 IMMUNE</span>
-                </div>
-                <div class="controls">
-                    <span class="icon-toggle" onclick="toggleImmunity(this)" title="Toggle Immunity">🏅</span>
-                    <span class="icon-toggle" onclick="toggleSnuffed(this)" title="Vote Out">🔥</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="graveyard-zone" ondragover="allowDrop(event)" ondrop="drop(event)">
-        <h3>🪦 Graveyard (Voted Out)</h3>
-    </div>
-
-    <script>
-        // Modified drag start to ignore the "immune" lock
-        function dragStart(e) {
-            e.dataTransfer.setData("text", e.target.id);
-            e.target.style.opacity = "0.5";
-        }
-
-        function allowDrop(e) {
-            e.preventDefault();
-        }
-
-        function drop(e) {
-            e.preventDefault();
-            const data = e.dataTransfer.getData("text");
-            const draggedElement = document.getElementById(data);
-            draggedElement.style.opacity = "1";
-            
-            // Append to the target zone (Active or Graveyard)
-            const target = e.target.closest('.graveyard-zone') || e.target.closest('#active-list');
-            if (target) {
-                target.appendChild(draggedElement);
-            }
-        }
-
-        // Toggles the gold border and lock icon
-        function toggleImmunity(btn) {
-            const row = btn.closest('.player-row');
-            row.classList.toggle('immune');
-        }
-
-        // Toggles the "voted out" transparency and icon
-        function toggleSnuffed(btn) {
-            const row = btn.closest('.player-row');
-            row.classList.toggle('snuffed');
-            btn.innerText = row.classList.contains('snuffed') ? '💨' : '🔥';
-        }
-    </script>
-</body>
-</html>
+function tT(e) {
+    const r = e.closest('.player-row');
+    r.classList.toggle('snuffed');
+    // Ensure they remain draggable after being voted out (snuffed)
+    r.setAttribute('draggable', 'true');
+    e.innerText = r.classList.contains('snuffed') ? '💨' : '🔥';
+    e.classList.toggle('active');
+}
