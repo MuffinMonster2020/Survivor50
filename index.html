@@ -70,7 +70,6 @@
         .player-row.immune .card-front { box-shadow: 0 0 25px var(--gold); border: 4px solid var(--gold) !important; }
         .player-row.snuffed { opacity: 0.4; filter: grayscale(1); }
         
-        /* MEDEVAC Styling */
         .player-row.medevac { height: 85px; width: 130px; margin: 10px auto; transform: none !important; }
         .player-row.medevac .card-front { 
             grid-template-columns: 1fr; background: #1a1a1a; border: 2px solid #ff4444 !important; 
@@ -168,7 +167,8 @@
                 r.setAttribute('ondragstart', 'ds(event)');
                 const acts = Array.from(r.querySelectorAll('.icon-toggle.active'));
                 const imm = acts.some(i => i.getAttribute('data-tip').includes('Immunity'));
-                r.classList.toggle('immune', imm); r.draggable = !imm;
+                r.classList.toggle('immune', imm); 
+                r.setAttribute('draggable', imm ? 'false' : 'true');
             });
             checkStatus(); return;
         }
@@ -177,7 +177,6 @@
             ps.forEach((n, idx) => createCard(n, oId, idx, document.getElementById(oId)));
         }
         
-        // Elimination List
         createCard("Jenna Lewis", "al", "jenna", document.getElementById('graveyard-list'), true);
         createCard("Kyle Fraser", "su", "kyle", document.getElementById('graveyard-list'), false, true);
         createCard("Mike White", "an", "mike", document.getElementById('graveyard-list'), true);
@@ -190,7 +189,8 @@
     function createCard(n, oId, idx, container, isSnuffed = false, isMedevac = false) {
         const r = document.createElement('div');
         r.className = `player-row owner-${oId} row-none ${isMedevac?'medevac':''}`;
-        r.id = `r-${oId}-${idx}`; r.draggable = true;
+        r.id = `r-${oId}-${idx}`; 
+        r.setAttribute('draggable', 'true');
         r.setAttribute('ondragstart', 'ds(event)');
         
         let torch = isSnuffed ? '💨' : '🔥';
@@ -226,8 +226,10 @@
         e.classList.toggle('active'); 
         if(type === 'im') {
             const r = e.closest('.player-row'); 
-            const imm = Array.from(r.querySelectorAll('.icon-toggle.active')).some(i => i.getAttribute('data-tip').includes('Immunity'));
-            r.classList.toggle('immune', imm); r.draggable = !imm; 
+            const acts = Array.from(r.querySelectorAll('.icon-toggle.active'));
+            const imm = acts.some(i => i.getAttribute('data-tip').includes('Immunity'));
+            r.classList.toggle('immune', imm); 
+            r.setAttribute('draggable', imm ? 'false' : 'true');
         } 
     }
 
@@ -251,6 +253,7 @@
     function cIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
     function fIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
     function pIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
+    
     function sv(){
         document.querySelectorAll('textarea').forEach(t=>t.innerHTML=t.value);
         document.querySelectorAll('select').forEach(s => { Array.from(s.options).forEach(o => o.value === s.value ? o.setAttribute('selected', 'selected') : o.removeAttribute('selected')); });
@@ -260,8 +263,21 @@
     function toggleReadme() { const b = document.getElementById('readmeBox'); b.style.display = (b.style.display === 'block') ? 'none' : 'block'; }
     function fC(e){e.closest('.player-row').classList.toggle('flipping')}
     function tSt(e){e.classList.toggle('active')}
-    function uT(s) { const r = s.closest('.player-row'); r.className = `player-row ${Array.from(r.classList).find(c=>c.startsWith('owner-'))} row-${s.value}`; }
-    function uO(s) { const r = s.closest('.player-row'); r.className = r.className.replace(/owner-\w+/, 'owner-'+s.value); checkStatus(); }
+    
+    function uT(s) { 
+        const r = s.closest('.player-row'); 
+        r.classList.remove('row-vatu', 'row-cila', 'row-kalo', 'row-none');
+        r.classList.add('row-' + s.value); 
+    }
+    
+    function uO(s) { 
+        const r = s.closest('.player-row'); 
+        const oldOwner = Array.from(r.classList).find(c=>c.startsWith('owner-'));
+        if(oldOwner) r.classList.remove(oldOwner);
+        r.classList.add('owner-'+s.value); 
+        checkStatus(); 
+    }
+    
     function tT(e){const r=e.closest('.player-row'); r.classList.toggle('snuffed'); e.innerText=r.classList.contains('snuffed')?'💨':'🔥'; e.classList.toggle('active')}
 </script>
 </body>
