@@ -7,19 +7,22 @@
         :root { 
             --mb-color: #1e88e5; --an-color: #e53935; --br-color: #43a047; 
             --sh-color: #f06292; --su-color: #fdd835; --al-color: #8e24aa; 
-            --merge-color: #795548; 
+            --sand-bg: #e3d5b8;
             --gold: #ffc107; --dark: #0b140d; 
         }
 
         body { background: var(--dark); background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://www.transparenttextures.com/patterns/dark-wood.png'); color: #f5f5f5; font-family: 'Roboto', sans-serif; margin: 0; padding: 20px; }
         
+        header { display: flex; justify-content: center; margin-bottom: 20px; }
+        .logo-container { width: 450px; cursor: pointer; border: 2px dashed var(--gold); border-radius: 10px; padding: 10px; text-align: center; }
+        .main-logo { max-width: 100%; height: auto; }
+
         .save-bar { text-align: center; margin-bottom: 30px; position: sticky; top: 15px; z-index: 2500; }
         .save-btn { background: linear-gradient(145deg, #ffc107, #ff8f00); color: #000; border: 2px solid #333; padding: 15px 35px; font-weight: 900; border-radius: 50px; cursor: pointer; font-family: 'Montserrat'; text-transform: uppercase; box-shadow: 0 6px 20px rgba(255,193,7,0.4); }
 
         .draft-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto; }
         .team-card { border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; min-height: 250px; position: relative; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,20,20,0.5); transition: 0.3s; }
         
-        /* Elimination Overlay */
         .team-card.eliminated { opacity: 0.5; filter: grayscale(0.8); border: 2px solid #ff0000; }
         .eliminated-overlay { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); background: red; color: white; padding: 10px 20px; font-family: 'Montserrat'; font-weight: 900; border: 4px solid white; z-index: 10; pointer-events: none; white-space: nowrap; }
         .team-card.eliminated .eliminated-overlay { display: block; }
@@ -28,8 +31,7 @@
         .captain-box { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; margin: 5px auto; overflow: hidden; background: #333; cursor: pointer; }
         .captain-img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Trade Icon Styles */
-        .trade-status { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 1.2rem; filter: drop-shadow(0 0 5px rgba(0,255,0,0.5)); transition: 0.3s; }
+        .trade-status { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 1.2rem; filter: drop-shadow(0 0 5px rgba(0,255,0,0.5)); transition: 0.3s; z-index: 5; }
         .trade-status.used { filter: grayscale(1); opacity: 0.3; }
         .trade-label { display: block; font-size: 0.5rem; color: #fff; margin-top: -5px; }
 
@@ -38,25 +40,49 @@
         #team-br .team-owner { background: var(--br-color); } #team-sh .team-owner { background: var(--sh-color); }
         #team-su .team-owner { background: var(--su-color); color: #000; } #team-al .team-owner { background: var(--al-color); }
 
+        /* Dynamic Player Card Styles */
         .player-row { margin-bottom: 15px; height: 110px; position: relative; cursor: grab; }
-        .card-front { position: absolute; width: 100%; height: 100%; border-radius: 10px; display: grid; grid-template-columns: 75px 1fr auto; align-items: center; padding: 0 15px; box-sizing: border-box; background: rgba(121, 85, 72, 0.3); border: 4px solid var(--merge-color); }
+        .card-front { 
+            position: absolute; width: 100%; height: 100%; border-radius: 10px; 
+            display: grid; grid-template-columns: 75px 1fr auto; align-items: center; 
+            padding: 0 15px; box-sizing: border-box; 
+            background: var(--sand-bg); color: #333; /* Sand Background */
+            border: 5px solid #444; /* Default Border */
+            transition: border-color 0.3s ease;
+        }
         
-        .player-row.immune .card-front { box-shadow: 0 0 25px var(--gold); border: 4px solid var(--gold) !important; }
+        /* Outline Classes mapped to Team Colors */
+        .border-ml .card-front { border-color: var(--mb-color); }
+        .border-an .card-front { border-color: var(--an-color); }
+        .border-br .card-front { border-color: var(--br-color); }
+        .border-sh .card-front { border-color: var(--sh-color); }
+        .border-su .card-front { border-color: var(--su-color); }
+        .border-al .card-front { border-color: var(--al-color); }
+        
+        .player-row.immune .card-front { box-shadow: 0 0 25px var(--gold); border: 5px solid var(--gold) !important; }
         .player-row.snuffed { opacity: 0.4; filter: grayscale(1); }
         
-        .player-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid white; cursor: pointer; }
-        .merge-tag { display: inline-block; background: var(--merge-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 900; margin-top: 5px; font-family: 'Montserrat'; }
+        .player-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #333; cursor: pointer; }
+        .merge-tag { display: inline-block; background: #5d4037; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 900; margin-top: 5px; font-family: 'Montserrat'; }
 
         .controls { display: flex; gap: 8px; align-items: center; }
-        .icon-toggle { cursor: pointer; font-size: 1.1rem; opacity: 0.3; position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+        .icon-toggle { cursor: pointer; font-size: 1.1rem; opacity: 0.3; position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; filter: contrast(150%); }
         .icon-toggle.active { opacity: 1; filter: grayscale(0); }
         .count-badge { display: none; position: absolute; top: -5px; right: -5px; background: var(--gold); color: black; font-size: 0.6rem; font-weight: 900; width: 14px; height: 14px; border-radius: 50%; align-items: center; justify-content: center; border: 1px solid black; }
 
         .jury-zone { margin-top: 40px; padding: 20px; border-radius: 20px; text-align: center; background: rgba(101, 67, 33, 0.4); border: 2px solid #8d6e63; }
         .graveyard-zone { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; background: rgba(0,0,0,0.6); border: 2px dashed #444; }
+        h2 { font-family: 'Montserrat'; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
 <body onload="build()">
+
+<header>
+    <div class="logo-container" onclick="document.getElementById('lin').click()">
+        <img id="hlog" src="https://via.placeholder.com/450x120?text=CLICK+TO+UPLOAD+SURVIVOR+LOGO" class="main-logo">
+        <input type="file" id="lin" style="display:none" onchange="hIm(this)">
+    </div>
+</header>
 
 <div class="save-bar"><button class="save-btn" onclick="sv()">📥 Save Update</button></div>
 
@@ -89,12 +115,13 @@
             ps.forEach((n, idx) => createCard(n, oId, idx, document.getElementById(oId)));
         }
         graveyard.forEach((n, idx) => createCard(n, "dead", idx, document.getElementById('graveyard-list'), true));
+        updateAllOutlines();
         checkTeams();
     }
 
     function createCard(n, oId, idx, container, isSnuffed = false) {
         const r = document.createElement('div');
-        r.className = `player-row owner-${oId} ${isSnuffed ? 'snuffed' : ''}`;
+        r.className = `player-row ${isSnuffed ? 'snuffed' : ''}`;
         r.id = `r-${oId}-${idx}`; 
         r.draggable = true;
         r.ondragstart = ds;
@@ -118,53 +145,50 @@
         container.appendChild(r);
     }
 
-    function checkTeams() {
-        const teams = ['ml', 'an', 'br', 'sh', 'su', 'al'];
-        teams.forEach(tId => {
-            const list = document.getElementById(tId);
-            const activePlayers = list.querySelectorAll('.player-row:not(.snuffed)');
-            const card = document.getElementById(`team-${tId}`);
-            if (activePlayers.length === 0) {
-                card.classList.add('eliminated');
-            } else {
-                card.classList.remove('eliminated');
+    // New logic to update card borders based on their parent team card ID
+    function updateAllOutlines() {
+        document.querySelectorAll('.player-row').forEach(row => {
+            const parentTeam = row.closest('.team-card');
+            // Remove old border classes
+            row.classList.remove('border-ml', 'border-an', 'border-br', 'border-sh', 'border-su', 'border-al');
+            if (parentTeam) {
+                const teamId = parentTeam.id.replace('team-', '');
+                row.classList.add(`border-${teamId}`);
             }
         });
     }
 
-    function tTr(el) {
-        el.classList.toggle('used');
-        el.querySelector('.trade-label').innerText = el.classList.contains('used') ? 'USED' : 'TRADE';
+    function checkTeams() {
+        ['ml', 'an', 'br', 'sh', 'su', 'al'].forEach(tId => {
+            const active = document.getElementById(tId).querySelectorAll('.player-row:not(.snuffed)');
+            document.getElementById(`team-${tId}`).classList.toggle('eliminated', active.length === 0);
+        });
     }
 
-    function tStack(el) {
-        const badge = el.querySelector('.count-badge');
-        let count = (parseInt(badge.innerText) + 1) % 4; badge.innerText = count; el.classList.toggle('active', count > 0);
-    }
-
-    function tS(e) { 
-        e.classList.toggle('active'); 
-        e.closest('.player-row').classList.toggle('immune', e.classList.contains('active')); 
-    }
-
+    function tTr(el) { el.classList.toggle('used'); el.querySelector('.trade-label').innerText = el.classList.contains('used') ? 'USED' : 'TRADE'; }
+    function tStack(el) { const b = el.querySelector('.count-badge'); let c = (parseInt(b.innerText) + 1) % 4; b.innerText = c; el.classList.toggle('active', c > 0); }
+    function tS(e) { e.classList.toggle('active'); e.closest('.player-row').classList.toggle('immune', e.classList.contains('active')); }
     function ds(e) { e.dataTransfer.setData("text", e.target.closest('.player-row').id); }
     function av(e) { e.preventDefault(); }
+    
     function dp(e) {
         e.preventDefault(); 
         const d = e.dataTransfer.getData("text"); 
         const target = e.target.closest('.player-list');
         if(target && d) { 
             target.appendChild(document.getElementById(d)); 
-            checkTeams();
+            updateAllOutlines(); // Update colors on trade
+            checkTeams(); 
         }
     }
 
+    function hIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>document.getElementById('hlog').src=e.target.result;r.readAsDataURL(n.files[0])}}
     function pIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
     function cIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
     
     function sv(){
         const b = new Blob([document.documentElement.outerHTML],{type:"text/html"});
-        const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="survivor_merge_update.html"; a.click();
+        const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="survivor_sand_board.html"; a.click();
     }
     
     function tT(e){
