@@ -40,18 +40,16 @@
         #team-br .team-owner { background: var(--br-color); } #team-sh .team-owner { background: var(--sh-color); }
         #team-su .team-owner { background: var(--su-color); color: #000; } #team-al .team-owner { background: var(--al-color); }
 
-        /* Dynamic Player Card Styles */
         .player-row { margin-bottom: 15px; height: 110px; position: relative; cursor: grab; }
         .card-front { 
             position: absolute; width: 100%; height: 100%; border-radius: 10px; 
             display: grid; grid-template-columns: 75px 1fr auto; align-items: center; 
             padding: 0 15px; box-sizing: border-box; 
-            background: var(--sand-bg); color: #333; /* Sand Background */
-            border: 5px solid #444; /* Default Border */
+            background: var(--sand-bg); color: #333;
+            border: 5px solid #444; 
             transition: border-color 0.3s ease;
         }
         
-        /* Outline Classes mapped to Team Colors */
         .border-ml .card-front { border-color: var(--mb-color); }
         .border-an .card-front { border-color: var(--an-color); }
         .border-br .card-front { border-color: var(--br-color); }
@@ -65,10 +63,19 @@
         .player-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #333; cursor: pointer; }
         .merge-tag { display: inline-block; background: #5d4037; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 900; margin-top: 5px; font-family: 'Montserrat'; }
 
-        .controls { display: flex; gap: 8px; align-items: center; }
+        /* Restored Tooltip CSS */
         .icon-toggle { cursor: pointer; font-size: 1.1rem; opacity: 0.3; position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; filter: contrast(150%); }
         .icon-toggle.active { opacity: 1; filter: grayscale(0); }
+        
+        .icon-toggle::after {
+            content: attr(data-tip); position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+            background: #000; color: var(--gold); padding: 4px 8px; font-size: 0.6rem; border: 1px solid var(--gold);
+            white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; z-index: 100; font-family: 'Montserrat'; text-transform: uppercase;
+        }
+        .icon-toggle:hover::after { opacity: 1; }
+
         .count-badge { display: none; position: absolute; top: -5px; right: -5px; background: var(--gold); color: black; font-size: 0.6rem; font-weight: 900; width: 14px; height: 14px; border-radius: 50%; align-items: center; justify-content: center; border: 1px solid black; }
+        .icon-toggle.active .count-badge { display: flex; }
 
         .jury-zone { margin-top: 40px; padding: 20px; border-radius: 20px; text-align: center; background: rgba(101, 67, 33, 0.4); border: 2px solid #8d6e63; }
         .graveyard-zone { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; background: rgba(0,0,0,0.6); border: 2px dashed #444; }
@@ -136,20 +143,18 @@
                 <span class="merge-tag">MERGE</span>
             </div>
             <div class="controls">
-                <span class="icon-toggle" onclick="tS(this)">📿</span>
-                <span class="icon-toggle" onclick="tStack(this)">🗿<span class="count-badge">0</span></span>
-                <span class="icon-toggle" onclick="tStack(this)">📜<span class="count-badge">0</span></span>
-                <span class="icon-toggle ${isSnuffed?'':'active'}" onclick="tT(this)">${isSnuffed?'💨':'🔥'}</span>
+                <span class="icon-toggle" data-tip="Indiv Immunity" onclick="tS(this)">📿</span>
+                <span class="icon-toggle" data-tip="Hidden Idol" onclick="tStack(this)">🗿<span class="count-badge">0</span></span>
+                <span class="icon-toggle" data-tip="Advantage" onclick="tStack(this)">📜<span class="count-badge">0</span></span>
+                <span class="icon-toggle ${isSnuffed?'':'active'}" data-tip="Torch" onclick="tT(this)">${isSnuffed?'💨':'🔥'}</span>
             </div>
         </div>`;
         container.appendChild(r);
     }
 
-    // New logic to update card borders based on their parent team card ID
     function updateAllOutlines() {
         document.querySelectorAll('.player-row').forEach(row => {
             const parentTeam = row.closest('.team-card');
-            // Remove old border classes
             row.classList.remove('border-ml', 'border-an', 'border-br', 'border-sh', 'border-su', 'border-al');
             if (parentTeam) {
                 const teamId = parentTeam.id.replace('team-', '');
@@ -177,7 +182,7 @@
         const target = e.target.closest('.player-list');
         if(target && d) { 
             target.appendChild(document.getElementById(d)); 
-            updateAllOutlines(); // Update colors on trade
+            updateAllOutlines(); 
             checkTeams(); 
         }
     }
@@ -188,7 +193,7 @@
     
     function sv(){
         const b = new Blob([document.documentElement.outerHTML],{type:"text/html"});
-        const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="survivor_sand_board.html"; a.click();
+        const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="survivor_board_tooltips.html"; a.click();
     }
     
     function tT(e){
