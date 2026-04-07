@@ -11,7 +11,7 @@
             --gold: #ffc107; --dark: #0b140d; 
         }
 
-        body { background: var(--dark); background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://www.transparenttextures.com/patterns/dark-wood.png'); color: #f5f5f5; font-family: 'Roboto', sans-serif; margin: 0; padding: 20px; perspective: 1200px; }
+        body { background: var(--dark); background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://www.transparenttextures.com/patterns/dark-wood.png'); color: #f5f5f5; font-family: 'Roboto', sans-serif; margin: 0; padding: 20px; }
         header { display: flex; justify-content: center; margin-bottom: 20px; }
         .logo-container { width: 450px; cursor: pointer; border: 2px dashed var(--gold); border-radius: 10px; padding: 10px; text-align: center; }
         .main-logo { max-width: 100%; height: auto; }
@@ -19,18 +19,11 @@
         .save-bar { text-align: center; margin-bottom: 30px; position: sticky; top: 15px; z-index: 2500; }
         .save-btn { background: linear-gradient(145deg, #ffc107, #ff8f00); color: #000; border: 2px solid #333; padding: 15px 35px; font-weight: 900; border-radius: 50px; cursor: pointer; font-family: 'Montserrat'; text-transform: uppercase; box-shadow: 0 6px 20px rgba(255,193,7,0.4); }
 
-        .help-btn { background: #333; color: var(--gold); border: 2px solid var(--gold); padding: 8px 18px; border-radius: 30px; cursor: pointer; position: fixed; top: 20px; right: 20px; z-index: 3000; font-family: 'Montserrat'; font-weight: 700; }
-        .readme-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 4000; overflow-y: auto; padding: 40px; }
-        .readme-content { max-width: 900px; margin: 0 auto; background: #151515; padding: 40px; border: 3px solid var(--gold); border-radius: 20px; line-height: 1.6; }
-
         .draft-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto; }
-        .team-card { border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; min-height: 350px; position: relative; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,20,20,0.5); }
+        .team-card { border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; min-height: 250px; position: relative; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,20,20,0.5); }
         .team-owner { padding: 15px; text-align: center; font-family: 'Montserrat'; font-weight: 900; color: white; }
         
-        .captain-box { width: 70px; height: 70px; border-radius: 50%; border: 2px solid white; margin: 5px auto; overflow: hidden; background: #333; cursor: pointer; }
-        .captain-img { width: 100%; height: 100%; object-fit: cover; }
-
-        .player-list { flex-grow: 1; padding: 20px; min-height: 120px; }
+        .player-list { flex-grow: 1; padding: 20px; min-height: 100px; }
         #team-ml .team-owner { background: var(--mb-color); } #team-ml .player-list { background: rgba(30, 136, 229, 0.15); }
         #team-an .team-owner { background: var(--an-color); } #team-an .player-list { background: rgba(229, 57, 53, 0.15); }
         #team-br .team-owner { background: var(--br-color); } #team-br .player-list { background: rgba(67, 160, 71, 0.15); }
@@ -39,14 +32,15 @@
         #team-al .team-owner { background: var(--al-color); } #team-al .player-list { background: rgba(142, 36, 170, 0.15); }
 
         .player-row { margin-bottom: 15px; height: 110px; position: relative; cursor: grab; }
-        .card-front { position: absolute; width: 100%; height: 100%; border-radius: 10px; display: grid; grid-template-columns: 65px 1fr auto; align-items: center; padding: 0 15px; box-sizing: border-box; background: #1a1a1a; border: 4px solid #444; }
-        
-        .row-merge .card-front { background-color: rgba(121, 85, 72, 0.4); border-color: var(--merge-color); }
+        .card-front { position: absolute; width: 100%; height: 100%; border-radius: 10px; display: grid; grid-template-columns: 75px 1fr auto; align-items: center; padding: 0 15px; box-sizing: border-box; background: rgba(121, 85, 72, 0.3); border: 4px solid var(--merge-color); }
         
         .player-row.immune .card-front { box-shadow: 0 0 25px var(--gold); border: 4px solid var(--gold) !important; }
         .player-row.snuffed { opacity: 0.4; filter: grayscale(1); }
         
-        .player-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid white; cursor: pointer; }
+        .player-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid white; cursor: pointer; transition: 0.2s; }
+        .player-img:hover { transform: scale(1.1); border-color: var(--gold); }
+
+        .merge-tag { display: inline-block; background: var(--merge-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 900; margin-top: 5px; font-family: 'Montserrat'; }
 
         .controls { display: flex; gap: 8px; align-items: center; }
         .icon-toggle { cursor: pointer; font-size: 1.1rem; opacity: 0.3; position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
@@ -54,15 +48,16 @@
         .count-badge { display: none; position: absolute; top: -5px; right: -5px; background: var(--gold); color: black; font-size: 0.6rem; font-weight: 900; width: 14px; height: 14px; border-radius: 50%; align-items: center; justify-content: center; border: 1px solid black; }
         .icon-toggle.active .count-badge { display: flex; }
 
-        .tribe-select { background: #000; color: #fff; border: 1px solid var(--gold); font-size: 0.7rem; border-radius: 5px; margin-top: 5px; cursor: pointer; width: 100%; padding: 4px; }
-        .graveyard-zone { margin-top: 40px; padding: 20px; border-radius: 20px; text-align: center; background: rgba(0,0,0,0.6); border: 2px dashed #444; }
+        .jury-zone { margin-top: 40px; padding: 20px; border-radius: 20px; text-align: center; background: rgba(101, 67, 33, 0.4); border: 2px solid #8d6e63; }
+        .graveyard-zone { margin-top: 20px; padding: 20px; border-radius: 20px; text-align: center; background: rgba(0,0,0,0.6); border: 2px dashed #444; }
+        h2 { font-family: 'Montserrat'; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
     </style>
 </head>
 <body onload="build()">
 
 <header>
     <div class="logo-container" onclick="document.getElementById('lin').click()">
-        <img id="hlog" src="https://via.placeholder.com/450x120?text=SURVIVOR+MERGE+LOGO" class="main-logo">
+        <img id="hlog" src="https://via.placeholder.com/450x120?text=SURVIVOR+MERGE" class="main-logo">
         <input type="file" id="lin" style="display:none" onchange="hIm(this)">
     </div>
 </header>
@@ -78,6 +73,7 @@
     <div class="team-card" id="team-al"><div class="team-owner">ALI</div><div class="player-list" id="al" ondragover="av(event)" ondrop="dp(event)"></div></div>
 </main>
 
+<div class="jury-zone"><h2>⚖️ JURY</h2><div id="jury-list" class="player-list" ondragover="av(event)" ondrop="dp(event)"></div></div>
 <div class="graveyard-zone"><h2>💀 GRAVEYARD</h2><div id="graveyard-list" class="player-list" ondragover="av(event)" ondrop="dp(event)"></div></div>
 
 <script>
@@ -107,9 +103,13 @@
         r.ondragstart = ds;
         
         r.innerHTML = `<div class="card-front">
-            <div class="img-box"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(n)}" class="player-img" onclick="this.nextElementSibling.click()"><input type="file" style="display:none" onchange="pIm(this)"></div>
-            <div class="player-info"><span class="player-name">${n}</span>
-                <select class="tribe-select" onchange="uT(this)"><option value="none">Pre-Merge</option><option value="merge">MERGE</option></select>
+            <div class="img-box">
+                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(n)}&background=random" class="player-img" onclick="this.nextElementSibling.click()">
+                <input type="file" style="display:none" onchange="pIm(this)">
+            </div>
+            <div class="player-info">
+                <span class="player-name" style="font-weight:900;">${n}</span><br>
+                <span class="merge-tag">MERGE</span>
             </div>
             <div class="controls">
                 <span class="icon-toggle" data-tip="Indiv Immunity" onclick="tS(this)">📿</span>
@@ -144,14 +144,8 @@
     function pIm(n){if(n.files[0]){const r=new FileReader();r.onload=e=>n.previousElementSibling.src=e.target.result;r.readAsDataURL(n.files[0])}}
     
     function sv(){
-        document.querySelectorAll('select').forEach(s => { Array.from(s.options).forEach(o => o.value === s.value ? o.setAttribute('selected', 'selected') : o.removeAttribute('selected')); });
         const b = new Blob([document.documentElement.outerHTML],{type:"text/html"});
-        const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="index.html"; a.click();
-    }
-    
-    function uT(s) { 
-        const r = s.closest('.player-row'); 
-        r.classList.toggle('row-merge', s.value === 'merge');
+        const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="survivor_update.html"; a.click();
     }
     
     function tT(e){const r=e.closest('.player-row'); r.classList.toggle('snuffed'); e.innerText=r.classList.contains('snuffed')?'💨':'🔥'; e.classList.toggle('active')}
